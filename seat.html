@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Smart Seat Allocation PRO+</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #1d2671, #c33764);
+    color: white;
+    transition: 0.3s;
+}
+
+.dark {
+    background: #111;
+}
+
+.container {
+    width: 90%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    background: rgba(255,255,255,0.1);
+}
+
+h1 {
+    text-align: center;
+    color: gold;
+}
+
+textarea, input {
+    width: 90%;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
+    border: none;
+}
+
+button {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    margin: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    background: linear-gradient(45deg, #ffcc00, #ff6600);
+}
+
+button:hover {
+    transform: scale(1.1);
+}
+
+table {
+    margin: 20px auto;
+    border-collapse: collapse;
+}
+
+td {
+    border: 1px solid white;
+    padding: 15px;
+    width: 100px;
+    height: 60px;
+    text-align: center;
+}
+
+td:nth-child(odd) {
+    background: rgba(0,255,255,0.2);
+}
+
+td:nth-child(even) {
+    background: rgba(255,0,255,0.2);
+}
+
+@media(max-width:600px){
+    textarea, input {
+        width: 95%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🔥 Smart Seat Allocation PRO+</h1>
+
+<textarea id="students" placeholder="Ajay-101&#10;Kumar-102"></textarea>
+
+<br>
+
+<input type="file" id="fileInput">
+
+<br>
+
+Rows: <input type="number" id="rows" value="3">
+Cols: <input type="number" id="cols" value="3">
+
+<br>
+
+<button onclick="generateSeats()">Generate Seats</button>
+<button onclick="downloadPDF()">Download PDF</button>
+<button onclick="toggleMode()">🌙 Mode</button>
+
+<div id="output"></div>
+
+</div>
+
+<script>
+
+/* FILE UPLOAD */
+document.getElementById("fileInput").addEventListener("change", function(event){
+    let file = event.target.files[0];
+    let reader = new FileReader();
+
+    reader.onload = function(e){
+        let text = e.target.result;
+        document.getElementById("students").value = text;
+    };
+
+    reader.readAsText(file);
+});
+
+function generateSeats(){
+
+let input = document.getElementById("students").value.split("\n");
+
+input = input.filter(n => n.trim() !== "");
+
+input.sort(() => Math.random() - 0.5);
+
+let rows = document.getElementById("rows").value;
+let cols = document.getElementById("cols").value;
+
+let table = "<table>";
+let index = 0;
+
+for(let i=0;i<rows;i++){
+    table += "<tr>";
+
+    for(let j=0;j<cols;j++){
+        if(index < input.length){
+            let [name, roll] = input[index].split("-");
+            table += `<td>${name}<br><small>${roll}</small></td>`;
+            index++;
+        } else {
+            table += "<td>-</td>";
+        }
+    }
+
+    table += "</tr>";
+}
+
+table += "</table>";
+
+document.getElementById("output").innerHTML = table;
+
+}
+
+/* PDF */
+function downloadPDF(){
+    let content = document.getElementById("output").innerHTML;
+    let win = window.open("");
+    win.document.write(content);
+    win.print();
+}
+
+/* Dark mode */
+function toggleMode(){
+    document.body.classList.toggle("dark");
+}
+
+</script>
+
+</body>
+</html>
